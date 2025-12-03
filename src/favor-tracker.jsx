@@ -1,16 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const PASSWORD = "favors123"; // Change this to your desired password
 const DANGER_THRESHOLD = 7; // Change this to set when someone becomes a "mooch"
 
 export default function FavorTracker() {
-  const [balance, setBalance] = useState(0); // Positive = Ariana owes Ryan, Negative = Ryan owes Ariana
+  // Load initial state from localStorage
+  const [balance, setBalance] = useState(() => {
+    const saved = localStorage.getItem('favorBalance');
+    return saved !== null ? parseInt(saved, 10) : 0;
+  });
+
+  const [history, setHistory] = useState(() => {
+    const saved = localStorage.getItem('favorHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [error, setError] = useState('');
-  const [history, setHistory] = useState([]);
   const [favorNote, setFavorNote] = useState('');
+
+  // Save to localStorage whenever balance or history changes
+  useEffect(() => {
+    localStorage.setItem('favorBalance', balance.toString());
+  }, [balance]);
+
+  useEffect(() => {
+    localStorage.setItem('favorHistory', JSON.stringify(history));
+  }, [history]);
 
   const isDangerZone = Math.abs(balance) >= DANGER_THRESHOLD;
 
