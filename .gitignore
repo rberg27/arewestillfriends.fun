@@ -35,3 +35,9 @@ dist-ssr
 build
 dist
 .cache
+
+# Backend specific
+server/node_modules
+server/.env
+server/dist
+server/*.log
